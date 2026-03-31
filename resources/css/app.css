@@ -1,3 +1,212 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        color-scheme: light;
+    }
+
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply min-h-screen bg-slate-50 bg-brand-mesh font-sans text-slate-900 antialiased;
+    }
+
+    ::selection {
+        @apply bg-brand-200 text-brand-950;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-display text-slate-950 tracking-tight;
+    }
+
+    a {
+        @apply transition-colors duration-200;
+    }
+
+    input,
+    textarea,
+    select {
+        @apply rounded-2xl border-slate-200 bg-white/90 text-slate-900 placeholder:text-slate-400 shadow-sm transition duration-200 focus:border-brand-400 focus:ring-brand-200;
+    }
+
+    input[type='checkbox'],
+    input[type='radio'] {
+        @apply border-slate-300 text-brand-600 focus:ring-brand-200;
+    }
+}
+
+@layer components {
+    .section-container {
+        @apply mx-auto w-full max-w-section px-4 sm:px-6 lg:px-8;
+    }
+
+    .section-eyebrow {
+        @apply inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-brand-700 shadow-soft backdrop-blur;
+    }
+
+    .section-title {
+        @apply text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl;
+    }
+
+    .section-lead {
+        @apply max-w-2xl text-sm leading-7 text-slate-600 sm:text-base;
+    }
+
+    .btn-base {
+        @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 ease-out focus:outline-none focus:ring-4 focus:ring-brand-200 disabled:pointer-events-none disabled:opacity-60;
+    }
+
+    .btn-primary {
+        @apply btn-base bg-gradient-brand text-white shadow-brand hover:-translate-y-0.5 hover:shadow-brand-lg;
+    }
+
+    .btn-secondary {
+        @apply btn-base border border-brand-100 bg-white/90 text-slate-700 shadow-soft hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700;
+    }
+
+    .btn-ghost {
+        @apply btn-base bg-transparent text-slate-600 shadow-none hover:bg-white hover:text-brand-700;
+    }
+
+    .surface-card,
+    .card-surface {
+        @apply rounded-brand-lg border border-white/80 bg-white/90 p-6 shadow-soft backdrop-blur;
+    }
+
+    .elevated-card,
+    .card-elevated {
+        @apply rounded-brand-lg border border-brand-100/70 bg-white p-6 shadow-surface;
+    }
+
+    .brand-gradient-bg,
+    .bg-brand-gradient {
+        @apply bg-gradient-brand text-white;
+    }
+
+    .field-shell,
+    .input-shell {
+        @apply flex items-center gap-3 rounded-brand-md border border-slate-200 bg-white/95 px-4 py-3 shadow-soft transition duration-200 focus-within:border-brand-300 focus-within:ring-4 focus-within:ring-brand-100;
+    }
+
+    .field-shell input,
+    .field-shell textarea,
+    .field-shell select,
+    .input-shell input,
+    .input-shell textarea,
+    .input-shell select {
+        @apply w-full border-0 bg-transparent p-0 text-sm text-slate-900 shadow-none placeholder:text-slate-400 focus:border-transparent focus:ring-0;
+    }
+
+    .badge-pill {
+        @apply inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700;
+    }
+
+    .admin-panel-shell {
+        @apply min-h-screen bg-slate-100 bg-admin-grid;
+        background-size: 32px 32px, 32px 32px, auto;
+    }
+
+    .admin-content-shell {
+        @apply mx-auto w-full max-w-admin px-4 py-6 sm:px-6 sm:py-8 lg:px-8;
+    }
+
+    /* Wildberries Product Cards */
+    .product-card {
+        @apply relative rounded-2xl bg-wb-gray-card border border-slate-200/50 overflow-hidden transition-all duration-300;
+        @apply hover:shadow-lg hover:border-wb-pink-light hover:-translate-y-1;
+    }
+
+    .product-card-image {
+        @apply relative w-full aspect-square overflow-hidden bg-white;
+    }
+
+    .product-card-image img {
+        @apply w-full h-full object-cover transition-transform duration-500;
+    }
+
+    .product-card:hover .product-card-image img {
+        @apply scale-105;
+    }
+
+    .product-card-body {
+        @apply p-3 space-y-2;
+    }
+
+    .product-card-title {
+        @apply text-sm font-medium text-slate-900 line-clamp-2 leading-tight;
+    }
+
+    .product-card-price {
+        @apply text-xl font-bold text-slate-900;
+    }
+
+    .product-card-price-old {
+        @apply text-sm text-wb-gray-text line-through font-normal;
+    }
+
+    /* Badges */
+    .badge-discount {
+        @apply absolute top-2 left-2 z-10 bg-wb-red-discount text-white text-xs font-bold px-2 py-1 rounded-md;
+    }
+
+    .badge-new {
+        @apply absolute top-2 left-2 z-10 bg-wb-orange-new text-white text-xs font-bold px-2 py-1 rounded-md;
+    }
+
+    .badge-rating {
+        @apply inline-flex items-center gap-1 bg-wb-purple-light text-wb-pink px-2 py-1 rounded-md text-xs font-semibold;
+    }
+
+    .badge-rating-high {
+        @apply inline-flex items-center gap-1 bg-green-50 text-wb-green-rating px-2 py-1 rounded-md text-xs font-semibold;
+    }
+
+    /* Product Grid */
+    .products-grid {
+        @apply grid gap-3 grid-cols-products-mobile sm:grid-cols-products-tablet lg:grid-cols-products-desktop xl:grid-cols-products-wide;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse-slow {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .animate-pulse-slow {
+        animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+}

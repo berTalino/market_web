@@ -33,6 +33,7 @@ class UpdateProductRequest extends FormRequest
                     ->ignore($product),
             ],
             'description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'price' => ['required', 'integer', 'min:1'],
             'stock' => ['required', 'integer', 'min:0'],
             'is_active' => ['required', 'boolean'],

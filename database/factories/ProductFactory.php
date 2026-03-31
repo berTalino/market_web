@@ -18,6 +18,7 @@ class ProductFactory extends Factory
             'name' => ucfirst(fake()->unique()->words(3, true)),
             'slug' => fake()->unique()->slug(3),
             'description' => fake()->optional()->paragraph(),
+            'image_path' => null,
             'price' => fake()->numberBetween(500, 250000),
             'stock' => fake()->numberBetween(0, 50),
             'is_active' => fake()->boolean(90),

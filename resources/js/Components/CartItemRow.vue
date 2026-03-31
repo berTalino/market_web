@@ -1,10 +1,9 @@
 <script setup>
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { formatPrice } from '@/utils/formatters';
+import { router, useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { computed } from 'vue';
-import { formatPrice } from '@/utils/formatters';
 
 const props = defineProps({
     item: {
@@ -19,12 +18,19 @@ const form = useForm({
 
 const quantityLimit = computed(() => Math.max(1, props.item.stock));
 
+const clampQuantity = (value) => Math.min(quantityLimit.value, Math.max(1, Number(value) || 1));
+
 const submit = () => {
     form.transform((data) => ({
-        quantity: Number(data.quantity),
+        quantity: clampQuantity(data.quantity),
     })).patch(route('cart.items.update', props.item.product_id), {
         preserveScroll: true,
     });
+};
+
+const adjustQuantity = (delta) => {
+    form.quantity = clampQuantity(Number(form.quantity) + delta);
+    submit();
 };
 
 const remove = () => {
@@ -35,66 +41,67 @@ const remove = () => {
 </script>
 
 <template>
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div class="space-y-2">
-                <div class="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-                    {{ item.shop_name }}
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900">
-                    {{ item.name }}
-                </h3>
-                <p class="text-sm text-gray-500">
-                    Цена за единицу: {{ formatPrice(item.price) }}
-                </p>
-                <p class="text-sm text-gray-500">
-                    Доступно: {{ item.stock }} шт.
-                </p>
+    <article class="elevated-card">
+        <div class="flex items-start gap-4">
+            <!-- Product placeholder image -->
+            <div class="h-20 w-20 flex-none overflow-hidden rounded-xl bg-gradient-to-br from-brand-100 to-violet-100 flex items-center justify-center sm:h-24 sm:w-24">
+                <span class="text-2xl font-bold text-brand-400 sm:text-3xl">
+                    {{ item.name.charAt(0).toUpperCase() }}
+                </span>
             </div>
 
-            <div class="w-full max-w-md space-y-4 lg:text-right">
-                <div class="text-lg font-semibold text-gray-900">
-                    {{ formatPrice(item.line_total) }}
-                </div>
-
-                <form
-                    class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-end"
-                    @submit.prevent="submit"
-                >
-                    <div class="sm:max-w-28">
-                        <input
-                            v-model="form.quantity"
-                            type="number"
-                            min="1"
-                            :max="quantityLimit"
-                            class="block w-full rounded-xl border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        >
-                        <InputError
-                            :message="form.errors.quantity"
-                            class="mt-2"
-                        />
+            <!-- Info + controls -->
+            <div class="min-w-0 flex-1 space-y-3">
+                <!-- Top row: name + remove -->
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold text-brand-600">{{ item.shop_name }}</p>
+                        <h3 class="mt-0.5 font-semibold leading-snug text-slate-900 line-clamp-2">{{ item.name }}</h3>
+                        <p class="mt-1 text-xs text-slate-400">{{ item.stock }} шт. в наличии</p>
                     </div>
-
-                    <PrimaryButton :disabled="form.processing">
-                        Обновить
-                    </PrimaryButton>
-
                     <button
-                        type="button"
-                        class="inline-flex items-center justify-center rounded-md border border-rose-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-rose-600 transition hover:bg-rose-50"
+                        class="flex-none rounded-full p-1.5 text-slate-400 transition hover:bg-rose-50 hover:text-rose-500 disabled:opacity-40"
+                        :disabled="form.processing"
                         @click="remove"
                     >
-                        Удалить
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
-                </form>
+                </div>
 
-                <Link
-                    :href="route('checkout.create')"
-                    class="inline-flex text-sm font-medium text-indigo-600 transition hover:text-indigo-700"
-                >
-                    Перейти к оформлению →
-                </Link>
+                <!-- Bottom row: quantity + price -->
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <!-- Quantity control -->
+                    <div class="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+                        <button
+                            type="button"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg text-slate-600 transition hover:bg-white hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-40"
+                            :disabled="form.processing || Number(form.quantity) <= 1"
+                            @click="adjustQuantity(-1)"
+                        >
+                            −
+                        </button>
+                        <span class="w-8 text-center text-sm font-semibold text-slate-900">{{ form.quantity }}</span>
+                        <button
+                            type="button"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg text-slate-600 transition hover:bg-white hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-40"
+                            :disabled="form.processing || Number(form.quantity) >= quantityLimit"
+                            @click="adjustQuantity(1)"
+                        >
+                            +
+                        </button>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="text-right">
+                        <p class="text-xs text-slate-400">{{ formatPrice(item.price) }} × {{ form.quantity }}</p>
+                        <p class="text-lg font-bold text-slate-900">{{ formatPrice(item.line_total) }}</p>
+                    </div>
+                </div>
+
+                <InputError :message="form.errors.quantity" class="text-xs" />
             </div>
         </div>
-    </div>
+    </article>
 </template>

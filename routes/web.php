@@ -10,8 +10,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/', [CatalogController::class, 'welcome'])->name('welcome');
 Route::get('/shops', [CatalogController::class, 'index'])->name('shops.index');
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/shops/{shop:slug}', [CatalogController::class, 'showShop'])->name('shops.show');
 Route::get('/shops/{shop:slug}/products/{product}', [CatalogController::class, 'showProduct'])->name('products.show');
 

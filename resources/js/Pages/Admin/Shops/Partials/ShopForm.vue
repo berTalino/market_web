@@ -1,7 +1,5 @@
 <script setup>
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -54,105 +52,141 @@ const submit = () => {
 </script>
 
 <template>
-    <form
-        class="space-y-8 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm"
-        @submit.prevent="submit"
-    >
-        <div class="grid gap-6 md:grid-cols-2">
-            <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-gray-700">
-                    Название магазина
-                </label>
-                <input
-                    v-model="form.name"
-                    type="text"
-                    class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    placeholder="Например, Fresh Market"
-                >
-                <InputError :message="form.errors.name" />
+    <form class="space-y-6" @submit.prevent="submit">
+        <section class="surface-card">
+            <div class="flex flex-col gap-3 border-b border-slate-100 pb-5">
+                <p class="section-eyebrow">
+                    Core data
+                </p>
+                <div>
+                    <h2 class="text-2xl font-semibold text-slate-950">
+                        Основные данные магазина
+                    </h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">
+                        Настройте имя, slug, владельца и описание магазина в едином административном паттерне.
+                    </p>
+                </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-medium text-gray-700">
-                    Slug
-                </label>
-                <input
-                    v-model="form.slug"
-                    type="text"
-                    class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    placeholder="fresh-market"
-                >
-                <InputError :message="form.errors.slug" />
-            </div>
+            <div class="mt-6 grid gap-6 md:grid-cols-2">
+                <div class="space-y-2 md:col-span-2">
+                    <label class="text-sm font-medium text-slate-700">
+                        Название магазина
+                    </label>
+                    <div class="field-shell">
+                        <input
+                            v-model="form.name"
+                            type="text"
+                            placeholder="Например, Fresh Market"
+                        >
+                    </div>
+                    <InputError :message="form.errors.name" />
+                </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-medium text-gray-700">
-                    Владелец
-                </label>
-                <select
-                    v-model="form.owner_id"
-                    class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                >
-                    <option value="">
-                        Не назначен
-                    </option>
-                    <option
-                        v-for="owner in owners"
-                        :key="owner.id"
-                        :value="owner.id"
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-slate-700">
+                        Slug
+                    </label>
+                    <div class="field-shell">
+                        <input
+                            v-model="form.slug"
+                            type="text"
+                            placeholder="fresh-market"
+                        >
+                    </div>
+                    <InputError :message="form.errors.slug" />
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-slate-700">
+                        Владелец
+                    </label>
+                    <div class="field-shell">
+                        <select v-model="form.owner_id">
+                            <option value="">
+                                Не назначен
+                            </option>
+                            <option
+                                v-for="owner in owners"
+                                :key="owner.id"
+                                :value="owner.id"
+                            >
+                                {{ owner.name }} · {{ owner.email }}
+                            </option>
+                        </select>
+                    </div>
+                    <InputError :message="form.errors.owner_id" />
+                </div>
+
+                <div class="space-y-2 md:col-span-2">
+                    <label class="text-sm font-medium text-slate-700">
+                        Описание
+                    </label>
+                    <div class="field-shell items-start">
+                        <textarea
+                            v-model="form.description"
+                            rows="6"
+                            placeholder="Коротко опишите магазин и ассортимент."
+                        ></textarea>
+                    </div>
+                    <InputError :message="form.errors.description" />
+                </div>
+            </div>
+        </section>
+
+        <section class="elevated-card">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div class="max-w-2xl">
+                    <p class="section-eyebrow">
+                        Availability
+                    </p>
+                    <h2 class="mt-3 text-2xl font-semibold text-slate-950">
+                        Статус публикации
+                    </h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">
+                        Активные магазины отображаются в публичном каталоге. Изменения сохраняются через существующий backend CRUD и маршруты остаются без изменений.
+                    </p>
+                </div>
+
+                <label class="flex w-full max-w-md items-start gap-3 rounded-brand-lg border border-slate-200 bg-slate-50/80 p-4 lg:w-auto">
+                    <input
+                        v-model="form.is_active"
+                        type="checkbox"
+                        class="mt-1"
                     >
-                        {{ owner.name }} · {{ owner.email }}
-                    </option>
-                </select>
-                <InputError :message="form.errors.owner_id" />
-            </div>
-
-            <div class="space-y-2 md:col-span-2">
-                <label class="text-sm font-medium text-gray-700">
-                    Описание
+                    <span>
+                        <span class="block text-sm font-medium text-slate-900">
+                            Магазин активен
+                        </span>
+                        <span class="mt-1 block text-sm leading-6 text-slate-500">
+                            Отключение статуса скрывает магазин из каталога, но не меняет данные объекта.
+                        </span>
+                    </span>
                 </label>
-                <textarea
-                    v-model="form.description"
-                    rows="5"
-                    class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    placeholder="Коротко опишите магазин и ассортимент."
-                />
-                <InputError :message="form.errors.description" />
             </div>
-        </div>
+            <InputError :message="form.errors.is_active" class="mt-3" />
+        </section>
 
-        <label class="flex items-start gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-            <input
-                v-model="form.is_active"
-                type="checkbox"
-                class="mt-1 rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-            >
-            <span>
-                <span class="block text-sm font-medium text-gray-900">
-                    Магазин активен
-                </span>
-                <span class="mt-1 block text-sm text-gray-500">
-                    Активные магазины отображаются в публичном каталоге.
-                </span>
-            </span>
-        </label>
-        <InputError :message="form.errors.is_active" />
-
-        <div class="flex flex-col gap-3 border-t border-gray-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-gray-500">
-                Изменения сохраняются через существующий backend CRUD.
+        <section class="surface-card flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-sm leading-6 text-slate-500">
+                Форма сохраняет совместимость с существующим create/update-flow и текущими данными магазинов.
             </p>
 
             <div class="flex flex-wrap items-center gap-3">
-                <Link :href="route('admin.shops.index')">
-                    <SecondaryButton>
-                        Отмена
-                    </SecondaryButton>
+                <Link
+                    :href="route('admin.shops.index')"
+                    class="btn-secondary"
+                >
+                    Отмена
                 </Link>
-                <PrimaryButton :disabled="form.processing">
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    :disabled="form.processing"
+                >
                     {{ submitLabel }}
-                </PrimaryButton>
+                </button>
             </div>
-        </div>
+        </section>
     </form>
 </template>

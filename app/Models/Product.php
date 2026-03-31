@@ -21,9 +21,24 @@ class Product extends Model
         'name',
         'slug',
         'description',
+        'image_path',
         'price',
         'stock',
         'is_active',
+    ];
+
+    /**
+     * @var list<string>
+     */
+    protected $appends = [
+        'image_url',
+    ];
+
+    /**
+     * @var list<string>
+     */
+    protected $hidden = [
+        'image_path',
     ];
 
     protected function casts(): array
@@ -33,6 +48,15 @@ class Product extends Model
             'stock' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! $this->image_path) {
+            return null;
+        }
+
+        return '/storage/' . $this->image_path;
     }
 
     public function shop(): BelongsTo

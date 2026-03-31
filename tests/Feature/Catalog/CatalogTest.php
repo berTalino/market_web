@@ -96,4 +96,72 @@ class CatalogTest extends TestCase
         $this->get(route('products.show', [$shop, $inactiveProduct->slug]))
             ->assertNotFound();
     }
+
+    public function test_guest_can_search_shops_and_products_in_catalog(): void
+    {
+        $matchedShop = Shop::factory()->create([
+            'name' => 'Техника 24',
+            'slug' => 'tehnika-24',
+            'is_active' => true,
+        ]);
+
+        Product::factory()->create([
+            'shop_id' => $matchedShop->id,
+            'name' => 'Пылесос Turbo',
+            'slug' => 'pylesos-turbo',
+            'is_active' => true,
+            'stock' => 3,
+        ]);
+
+        $otherShop = Shop::factory()->create([
+            'name' => 'Дом и уют',
+            'slug' => 'dom-i-uyut',
+            'is_active' => true,
+        ]);
+
+        Product::factory()->create([
+            'shop_id' => $otherShop->id,
+            'name' => 'Подушка Basic',
+            'slug' => 'podushka-basic',
+            'is_active' => true,
+            'stock' => 5,
+        ]);
+
+        $this->get(route('catalog.index', ['q' => 'turbo']))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Catalog/Shops/Index')
+                ->where('searchQuery', 'turbo')
+                ->has('shops', 1)
+                ->where('shops.0.name', 'Техника 24')
+                ->has('featuredProducts', 1)
+                ->where('featuredProducts.0.name', 'Пылесос Turbo')
+            );
+    }
+
+    public function test_catalog_search_returns_empty_results_for_unknown_query(): void
+    {
+        $shop = Shop::factory()->create([
+            'name' => 'Электроника плюс',
+            'slug' => 'elektronika-plyus',
+            'is_active' => true,
+        ]);
+
+        Product::factory()->create([
+            'shop_id' => $shop->id,
+            'name' => 'Наушники Pro',
+            'slug' => 'naushniki-pro',
+            'is_active' => true,
+            'stock' => 6,
+        ]);
+
+        $this->get(route('catalog.index', ['q' => 'nesuschestvuet']))
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Catalog/Shops/Index')
+                ->where('searchQuery', 'nesuschestvuet')
+                ->has('shops', 0)
+                ->has('featuredProducts', 0)
+            );
+    }
 }
