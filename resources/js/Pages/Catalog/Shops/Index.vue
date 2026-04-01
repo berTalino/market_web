@@ -3,7 +3,7 @@ import EmptyState from '@/Components/EmptyState.vue';
 import ProductCard from '@/Components/ProductCard.vue';
 import PromoBanner from '@/Components/PromoBanner.vue';
 import MarketLayout from '@/Layouts/MarketLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
 
@@ -48,6 +48,19 @@ const getShopPreviewProducts = (shop) => {
     return props.featuredProducts
         ?.filter(product => product.shop?.id === shop.id)
         .slice(0, 3) || [];
+};
+
+// Обработчик добавления в корзину
+const handleAddToCart = (product) => {
+    router.post(route('cart.items.store'), {
+        product_id: product.id,
+        quantity: 1,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            // Можно добавить уведомление об успешном добавлении
+        },
+    });
 };
 </script>
 
@@ -175,6 +188,7 @@ const getShopPreviewProducts = (shop) => {
                             :product="product"
                             show-shop-name
                             compact
+                            @add-to-cart="handleAddToCart"
                         />
                     </div>
                 </section>

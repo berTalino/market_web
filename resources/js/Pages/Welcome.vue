@@ -31,7 +31,7 @@ const loadMore = () => {
 
 // Обработчик добавления в корзину
 const handleAddToCart = (product) => {
-    router.post(route('cart.add'), {
+    router.post(route('cart.items.store'), {
         product_id: product.id,
         quantity: 1,
     }, {
@@ -129,7 +129,7 @@ const handleAddToCart = (product) => {
         <section class="section-container pb-8">
             <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-12 text-center text-white shadow-xl">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_50%)]" />
-                
+
                 <div class="relative z-10 max-w-2xl mx-auto">
                     <h2 class="text-3xl font-bold mb-4">
                         Откройте для себя новые магазины

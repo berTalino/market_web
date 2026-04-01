@@ -28,7 +28,7 @@ const highAvailabilityProducts = computed(() => props.products.filter(
 
 // Обработчик добавления в корзину
 const handleAddToCart = (product) => {
-    router.post(route('cart.add'), {
+    router.post(route('cart.items.store'), {
         product_id: product.id,
         quantity: 1,
     }, {
@@ -73,7 +73,7 @@ const handleAddToCart = (product) => {
                 <!-- Компактный Hero -->
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-8 shadow-lg">
                     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_40%)]" />
-                    
+
                     <div class="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div class="flex-1">
                             <div class="flex items-center gap-4 mb-3">
